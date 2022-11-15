@@ -37,7 +37,7 @@ keys = [
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "b", lazy.spawn("brave"), desc="Spawn a brave browser"),
+    Key([mod], "b", lazy.spawn("qutebrowser"), desc="Spawn a brave browser"),
     Key([mod], "s", lazy.spawn("plasma-open-settings"), desc="Spawn a settings"),
     Key([mod, "shift"], "e", lazy.spawn("emacsclient -c -a 'emacs'"), desc="Spawn a doom-emacs"),
     Key([mod], "d", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'"), desc="Spawn a dmenu"),
@@ -214,7 +214,7 @@ def init_widgets_list():
                        foreground = colors[1],
                        colour_have_updates = colors[1],
                        colour_no_updates = colors[1],
-                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + ' -e sudo pacman -Syu')},
+                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e sudo pacman -Syu')},
                        padding = 5,
                        background = colors[5]
                        ),
@@ -229,7 +229,7 @@ def init_widgets_list():
               widget.Memory(
                        foreground = colors[1],
                        background = colors[6],
-                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + ' -e htop')},
+                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e htop')},
                        fmt = 'Mem: {}',
                        padding = 5
                        ),
