@@ -12,6 +12,10 @@ mod = "mod4"
 terminal = guess_terminal()
 
 keys = [
+    Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
+    Key([mod], "u", lazy.spawn("setxkbmap -layout us"), desc="Swich keyboard layout to us"),
+    Key([mod], "g", lazy.spawn("xrandr --output eDP-1 --brightness 0.4"), desc="Low sreen brightnes"),
+    Key([mod], "f", lazy.spawn("xrandr --output eDP-1 --brightness 1.0"), desc="Low sreen brightnes"),
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
