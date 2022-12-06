@@ -9,13 +9,13 @@ from libqtile.utils import guess_terminal
 
 mod = "mod4"
 
-terminal = guess_terminal()
+terminal = "emacsclient -c -a 'emacs' --eval '(+vterm/here nil)'"
 
 keys = [
     Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
     Key([mod], "u", lazy.spawn("setxkbmap -layout us"), desc="Swich keyboard layout to us"),
-    Key([mod], "g", lazy.spawn("xrandr --output eDP-1 --brightness 0.4"), desc="Low sreen brightnes"),
-    Key([mod], "f", lazy.spawn("xrandr --output eDP-1 --brightness 1.0"), desc="Low sreen brightnes"),
+    Key([mod], "g", lazy.spawn("xrandr --output eDP1 --brightness 0.4"), desc="Low sreen brightnes"),
+    Key([mod], "f", lazy.spawn("xrandr --output eDP1 --brightness 1.0"), desc="Low sreen brightnes"),
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
@@ -35,7 +35,7 @@ keys = [
 	Key([mod], "comma", lazy.prev_screen(), desc='Move focus to prev monitor'),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "space", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod, "control"], "s", lazy.spawn("xrandr --output HDMI-1 --auto --rotate left --left-of eDP-1"), desc="Reload the config"),
+    Key([mod, "control"], "s", lazy.spawn("xrandr --output HDMI1 --auto --rotate left --left-of eDP1"), desc="Reload the config"),
     Key([mod, "shift"], "space", lazy.prev_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
@@ -241,6 +241,19 @@ def init_widgets_list():
                        text = '',
                        font = "Ubuntu Mono",
                        background = colors[6],
+                       foreground = colors[7],
+                       padding = 0,
+                       fontsize = 37
+                       ),
+              widget.Battery(
+                       background = colors[7],
+                       font = "Ubuntu Mono",
+                       format = '{hour:d}:{min:02d} {percent:2.0%} {char}'
+              ),
+              widget.TextBox(
+                       text = '',
+                       font = "Ubuntu Mono",
+                       background = colors[7],
                        foreground = colors[9],
                        padding = 0,
                        fontsize = 37

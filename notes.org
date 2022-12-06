@@ -1,0 +1,4 @@
+* Inbox
+** [2022-11-27 Paz 23:16]
+
+[[file:~/.config/qtile/config.org]]
