@@ -1,5 +1,7 @@
 #!/bin/bash
 
+emacs --daemon &
+
 function run {
   if ! pgrep $1 ;
   then
@@ -40,7 +42,6 @@ if [ -e /sys/class/power_supply/BAT0 ]; then
 fi
 
 variety &
-/usr/bin/emacs --daemon &
 lxsession &
 pulsemixer --unmute &
 picom -b &
@@ -62,5 +63,3 @@ run numlockx on
 run volumeicon
 #run nitrogen --restore
 run conky -c $HOME/.config/awesome/system-overview
-
-#feh --bg-fill /usr/share/backgrounds/arcolinux/arco-wallpaper.jpg &

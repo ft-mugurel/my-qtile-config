@@ -9,7 +9,7 @@ from libqtile.utils import guess_terminal
 
 mod = "mod4"
 
-terminal = "emacsclient -c -a 'emacs' --eval '(+vterm/here nil)'"
+terminal = "alacritty"
 
 keys = [
     Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
@@ -44,7 +44,9 @@ keys = [
     Key([mod], "b", lazy.spawn("qutebrowser"), desc="Spawn a brave browser"),
     Key([mod], "s", lazy.spawn("plasma-open-settings"), desc="Spawn a settings"),
     Key([mod, "shift"], "e", lazy.spawn("emacsclient -c -a 'emacs'"), desc="Spawn a doom-emacs"),
+    Key([mod, "shift"], "m", lazy.spawn("emacs --with-profile=doom"), desc="Spawn a doom-emacs"),
     Key([mod], "d", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'"), desc="Spawn a dmenu"),
+    Key([mod], "o", lazy.spawn("obsidian"), desc="Spawn a obsidian"),
 ]
 
 layouts = [
@@ -77,8 +79,8 @@ colors = [["#282c34", "#282c34"],
 
 groups = [Group("DEV", layout='monadtall'),
           Group("WWW", layout='monadtall'),
-          Group("SYS", layout='monadtall'),
-          Group("SYS", layout='monadtall'),
+          Group("OBS", layout='monadtall'),
+          Group("OBS", layout='monadtall'),
           Group("DOC", layout='monadtall'),
           Group("VBOX", layout='monadtall'),
           Group("CHAT", layout='monadtall'),
@@ -102,7 +104,7 @@ def init_widgets_list():
               widget.Image(
                        filename = "~/.config/qtile/icons/python-white.png",
                        scale = "False",
-                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal)}
+                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn("onboard")}
                        ),
               widget.Sep(
                        linewidth = 0,
