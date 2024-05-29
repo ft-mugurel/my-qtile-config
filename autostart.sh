@@ -41,25 +41,12 @@ if [ -e /sys/class/power_supply/BAT0 ]; then
     export IS_LAPTOP=$true
 fi
 
-variety &
-lxsession &
-pulsemixer --unmute &
 picom -b &
-parcellite &
 unclutter &
 nm-applet &
-udiskie --smart-tray &
-redshift-gtk &
+blueman-applet &
 
-run dex $HOME/.config/autostart/arcolinux-welcome-app.desktop
 run nm-applet
-#run caffeine
-run pamac-tray
-#run variety
-run xfce4-power-manager
-run blueberry-tray
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 run numlockx on
-run volumeicon
-#run nitrogen --restore
-run conky -c $HOME/.config/awesome/system-overview
+run nitrogen --restore

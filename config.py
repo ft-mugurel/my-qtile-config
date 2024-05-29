@@ -5,17 +5,16 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile import qtile
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
-
+from qtile_extras import widget
+from libqtile.widget import backlight
+from libqtile.dgroups import simple_key_binder
+from qtile_extras.widget.decorations import RectDecoration
 
 mod = "mod4"
 
 terminal = "alacritty"
 
 keys = [
-    Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
-    Key([mod], "u", lazy.spawn("setxkbmap -layout us"), desc="Swich keyboard layout to us"),
-    Key([mod], "g", lazy.spawn("xrandr --output eDP1 --brightness 0.4"), desc="Low sreen brightnes"),
-    Key([mod], "f", lazy.spawn("xrandr --output eDP1 --brightness 1.0"), desc="Low sreen brightnes"),
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
@@ -29,7 +28,7 @@ keys = [
     Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod, "shift"], "Return", lazy.layout.toggle_split(), desc="Toggle between split and unsplit sides of stack",),
     Key([mod], "period", lazy.next_screen(), desc='Move focus to next monitor'),
 	Key([mod], "comma", lazy.prev_screen(), desc='Move focus to prev monitor'),
@@ -40,14 +39,24 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "b", lazy.spawn("qutebrowser"), desc="Spawn a brave browser"),
-    Key([mod], "s", lazy.spawn("plasma-open-settings"), desc="Spawn a settings"),
     Key([mod, "shift"], "e", lazy.spawn("emacsclient -c -a 'emacs'"), desc="Spawn a doom-emacs"),
     Key([mod, "shift"], "m", lazy.spawn("emacs --with-profile=doom"), desc="Spawn a doom-emacs"),
     Key([mod], "d", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'"), desc="Spawn a dmenu"),
-    Key([mod], "o", lazy.spawn("obsidian"), desc="Spawn a obsidian"),
+    Key([mod], "n", lazy.spawn("obsidian"), desc="Spawn a obsidian"),
+    Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
+    Key([mod], "u", lazy.spawn("setxkbmap -layout us"), desc="Swich keyboard layout to us"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer sset Master 5%-"), desc="Lower Volume by 5%"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer sset Master 5%+"), desc="Raise Volume by 5%"),
+    Key([], "XF86AudioMute", lazy.spawn("amixer sset Master 1+ toggle"), desc="Mute/Unmute Volume"),
+    Key([mod], "p", lazy.spawn("playerctl -p spotify play-pause"), desc="Play/Pause player"),
+    Key([mod], "o", lazy.spawn("playerctl -p spotify next"), desc="Skip to next"),
+    Key([mod], "i", lazy.spawn("playerctl -p spotify previous"), desc="Skip to previous"),
+    Key([], "XF86KbdBrightnessUp", lazy.spawn("brightnessctl --device='asus::kbd_backlight' s 1+"), desc="Spawn a obsidian"),
+    Key([], "XF86KbdBrightnessDown", lazy.spawn("brightnessctl --device='asus::kbd_backlight' s 1-"), desc="Spawn a obsidian"),
+    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 30+"), desc="Spawn a obsidian"),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 30-"), desc="Spawn a obsidian"),
 ]
+
 
 layouts = [
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=1),
@@ -88,7 +97,6 @@ groups = [Group("DEV", layout='monadtall'),
           Group("VID", layout='monadtall'),
           Group("GFX", layout='floating')]
 
-from libqtile.dgroups import simple_key_binder
 dgroups_key_binder = simple_key_binder("mod4")
 
 
@@ -97,197 +105,416 @@ def init_widgets_list():
     widgets_list = [
               widget.Sep(
                        linewidth = 0,
-                       padding = 6,
-                       foreground = colors[2],
-                       background = colors[0]
+                       padding = 20,
+                       foreground = colors[0],
+                       background = "00000000"
                        ),
-              widget.Image(
-                       filename = "~/.config/qtile/icons/python-white.png",
-                       scale = "False",
-                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn("onboard")}
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "#00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
+              widget.GroupBox(
+                        font = "Ubuntu Bold",
+                        fontsize = 15,
+                        margin_y = 3,
+                        margin_x = 3,
+                        borderwidth = 0,
+                        active = colors[2],
+                        inactive = colors[7],
+                        rounded = True,
+                        highlight_color = colors[1],
+                        highlight_method = "block",
+                        this_current_screen_border = colors[6],
+                        this_screen_border = colors [4],
+                        other_current_screen_border = colors[6],
+                        other_screen_border = colors[4],
+                        background = "#00000000",
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               widget.Sep(
                        linewidth = 0,
-                       padding = 6,
-                       foreground = colors[2],
-                       background = colors[0]
-                       ),
-              widget.GroupBox(
-                       font = "Ubuntu Bold",
-                       fontsize = 9,
-                       margin_y = 3,
-                       margin_x = 0,
-                       padding_y = 5,
-                       padding_x = 3,
-                       borderwidth = 3,
-                       active = colors[2],
-                       inactive = colors[7],
-                       rounded = False,
-                       highlight_color = colors[1],
-                       highlight_method = "block",
-                       this_current_screen_border = colors[6],
-                       this_screen_border = colors [4],
-                       other_current_screen_border = colors[6],
-                       other_screen_border = colors[4],
-                       foreground = colors[2],
-                       background = colors[0]
+                       padding = 20,
+                       foreground = colors[0],
+                       background = "00000000"
                        ),
              widget.TextBox(
-                       text = '|',
-                       font = "Ubuntu Mono",
-                       background = colors[0],
-                       foreground = '474747',
-                       padding = 2,
-                       fontsize = 14
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               widget.CurrentLayoutIcon(
                        custom_icon_paths = [os.path.expanduser("~/.config/qtile/icons")],
                        foreground = colors[2],
-                       background = colors[0],
+                       background = "#00000000",
                        padding = 0,
-                       scale = 0.7
+                       scale = 0.3,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               widget.CurrentLayout(
                        foreground = colors[2],
-                       background = colors[0],
-                       padding = 5
+                       background = "#00000000",
+                       padding = 5,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
              widget.TextBox(
-                       text = '|',
-                       font = "Ubuntu Mono",
-                       background = colors[0],
-                       foreground = '474747',
-                       padding = 2,
-                       fontsize = 14
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
+              widget.Sep(
+                       linewidth = 0,
+                       padding = 20,
+                       foreground = colors[0],
+                       background = "00000000"
                        ),
               widget.WindowName(
                        foreground = colors[2],
-                       background = colors[0],
-                       padding = 0
+                       background = "#00000000",
+                       padding = 0,
+                       ),
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                       ),
+              widget.Sep(
+                       linewidth = 0,
+                       padding = 20,
+                       foreground = colors[0],
+                       background = "00000000"
                        ),
               widget.Systray(
-                       background = colors[0],
+                       background = "#00000000",
                        padding = 5
                        ),
               widget.Sep(
                        linewidth = 0,
-                       padding = 6,
+                       padding = 20,
                        foreground = colors[0],
-                       background = colors[0]
+                       background = "00000000"
                        ),
-              widget.TextBox(
-                       text = '',
-                       font = "Ubuntu Mono",
-                       background = colors[0],
-                       foreground = colors[3],
-                       padding = 0,
-                       fontsize = 37
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
-             widget.Net(
-                       interface = "wlo1",
-                       format = 'Net: {down} ↓↑ {up}',
-                       foreground = colors[1],
-                       background = colors[3],
-                       padding = 5
-                       ),
-              widget.TextBox(
-                       text = '',
-                       font = "Ubuntu Mono",
-                       background = colors[3],
-                       foreground = colors[4],
-                       padding = 0,
-                       fontsize = 37
+                widget.Net(
+                        interface = "wlp3s0",
+                        format = 'Net: {down} ↓↑ {up}',
+                        foreground = colors[1],
+                        background = "#00000000",
+                        padding = 5,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               widget.ThermalSensor(
                        foreground = colors[1],
-                       background = colors[4],
+                        background = "#00000000",
                        threshold = 90,
                        fmt = 'Temp: {}',
-                       padding = 5
-                       ),
-              widget.TextBox(
-                       text='',
-                       font = "Ubuntu Mono",
-                       background = colors[4],
-                       foreground = colors[5],
-                       padding = 0,
-                       fontsize = 37
-                       ),
-              widget.CheckUpdates(
-                       update_interval = 1800,
-                       distro = "Arch_checkupdates",
-                       display_format = "Updates: {updates} ",
-                       foreground = colors[1],
-                       colour_have_updates = colors[1],
-                       colour_no_updates = colors[1],
-                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e sudo pacman -Syu')},
                        padding = 5,
-                       background = colors[5]
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
-              widget.TextBox(
-                       text = '',
-                       font = "Ubuntu Mono",
-                       background = colors[5],
-                       foreground = colors[6],
-                       padding = 0,
-                       fontsize = 37
-                       ),
+              widget.CPU(
+                       foreground = colors[1],
+                        background = "#00000000",
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+              ),
               widget.Memory(
                        foreground = colors[1],
-                       background = colors[6],
+                        background = "#00000000",
                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e htop')},
                        fmt = 'Mem: {}',
-                       padding = 5
+                       padding = 5,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               widget.TextBox(
-                       text = '',
+                       text = ' ',
                        font = "Ubuntu Mono",
-                       background = colors[6],
+                        background = "#00000000",
                        foreground = colors[7],
                        padding = 0,
                        fontsize = 37
                        ),
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
               widget.Battery(
-                       background = colors[7],
+                        background = "#00000000",
                        font = "Ubuntu Mono",
-                       format = '{hour:d}:{min:02d} {percent:2.0%} {char}'
+                       format = '{hour:d}:{min:02d} {percent:2.0%} {char}',
+                       mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e rog-control-center')},
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
               ),
-              widget.TextBox(
-                       text = '',
+              widget.UPowerWidget(
+                        background = "#00000000",
                        font = "Ubuntu Mono",
-                       background = colors[7],
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+              ),
+             widget.TextBox(
+                        text = ' ',
+                        font = "Ubuntu Mono",
+                        background = "00000000",
+                        padding = 2,
+                        fontsize = 14,
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
+                       ),
+              widget.TextBox(
+                       text = ' ',
+                       font = "Ubuntu Mono",
+                        background = "#00000000",
                        foreground = colors[9],
                        padding = 0,
                        fontsize = 37
                        ),
               widget.Clock(
-                       foreground = colors[1],
-                       background = colors[9],
-                       format = "%A, %B %d - %H:%M "
+                        marign = 10,
+                        padding = 20,
+                        format = "%A, %B %d - %H:%M ",
+                        decorations = [
+                        RectDecoration(
+                            colour="#004040",
+                            radius=15,
+                            filled=True,
+                            padding_y=10,
+                            padding_x=0,
+                            margin_x=20,
+                            margin_y=20,
+                            group=True
+                            )
+                        ],
                        ),
               ]
     return widgets_list
 
-def init_widgets_screen1():
-    widgets_screen1 = init_widgets_list()
-    del widgets_screen1[4:7]               # Slicing removes unwanted widgets (systray) on Monitors 1,3
-    return widgets_screen1
-
-def init_widgets_screen2():
-    widgets_screen2 = init_widgets_list()
-    del widgets_screen2[9:10]               # Slicing removes unwanted widgets (systray) on Monitors 1,3
-    del widgets_screen2[14:25]               # Slicing removes unwanted widgets (systray) on Monitors 1,3
-    return widgets_screen2                 # Monitor 2 will display all widgets in widgets_list
-
 def init_screens():
-    return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=1.0, size=20)),
-            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=1.0, size=17))]
+    return [Screen(top=bar.Bar(widgets=init_widgets_list(), background="#00000000", opacity=1.0, size=55)),]
 
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
     widgets_list = init_widgets_list()
-    widgets_screen1 = init_widgets_screen1()
-    widgets_screen2 = init_widgets_screen2()
 
 def window_to_prev_group(qtile):
     if qtile.currentWindow is not None:
