@@ -34,7 +34,7 @@ keys = [
 	Key([mod], "comma", lazy.prev_screen(), desc='Move focus to prev monitor'),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "space", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod, "control"], "s", lazy.spawn("xrandr --output HDMI1 --auto --rotate left --left-of eDP1"), desc="Reload the config"),
+    Key([mod, "control"], "s", lazy.spawn("xrandr --output HDMI-1-0 --auto --rotate left --left-of eDP"), desc="Reload the config"),
     Key([mod, "shift"], "space", lazy.prev_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
@@ -43,10 +43,12 @@ keys = [
     Key([mod, "shift"], "m", lazy.spawn("emacs --with-profile=doom"), desc="Spawn a doom-emacs"),
     Key([mod], "d", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'"), desc="Spawn a dmenu"),
     Key([mod], "n", lazy.spawn("obsidian"), desc="Spawn a obsidian"),
+    Key([mod], "b", lazy.spawn("qutebrowser"), desc="Spawn a obsidian"),
+    Key([mod], "a", lazy.spawn("alacritty -e /home/mtu/Tools/tmux-sessionizer.sh"), desc="Spawn a obsidian"),
     Key([mod], "t", lazy.spawn("setxkbmap -layout tr"), desc="Swich keyboard layout to tr"),
     Key([mod], "u", lazy.spawn("setxkbmap -layout us"), desc="Swich keyboard layout to us"),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer sset Master 5%-"), desc="Lower Volume by 5%"),
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer sset Master 5%+"), desc="Raise Volume by 5%"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer -D pulse sset Master 5%-"), desc="Lower Volume by 5%"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer -D pulse sset Master 5%+"), desc="Raise Volume by 5%"),
     Key([], "XF86AudioMute", lazy.spawn("amixer sset Master 1+ toggle"), desc="Mute/Unmute Volume"),
     Key([mod], "p", lazy.spawn("playerctl -p spotify play-pause"), desc="Play/Pause player"),
     Key([mod], "o", lazy.spawn("playerctl -p spotify next"), desc="Skip to next"),
@@ -55,12 +57,15 @@ keys = [
     Key([], "XF86KbdBrightnessDown", lazy.spawn("brightnessctl --device='asus::kbd_backlight' s 1-"), desc="Spawn a obsidian"),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 30+"), desc="Spawn a obsidian"),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 30-"), desc="Spawn a obsidian"),
+    Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle floating window"),
+
+    Key([mod, "shift"], "t", lazy.spawn("feh -F /home/mtu/Pictures/tmux.png"), desc="Swich keyboard layout to us"),
 ]
 
 
 layouts = [
+    layout.Max(margin=20, border_radius=10),
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=1),
-    layout.Max(),
     layout.Stack(num_stacks=2),
     layout.Matrix(),
     layout.MonadWide(),
@@ -75,16 +80,16 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-colors = [["#282c34", "#282c34"],
-          ["#171617", "#171617"],
-          ["#dfdfdf", "#dfdfdf"],
-          ["#474745", "#474745"],
-          ["#595959", "#595959"],
-          ["#da8548", "#da8548"],
-          ["#311d3b", "#311d3b"],
-          ["#7c7a7d", "#7c7a7d"],
-          ["#46d9ff", "#46d9ff"],
-          ["#a9a1e1", "#a9a1e1"]]
+colors = [["#89b4fa", "#89b4fa"],
+          ["#fab387", "#fab387"],
+          ["#cba6f7", "#cba6f7"],
+          ["#94e2d5", "#94e2d5"],
+          ["#f5e0dc", "#f5e0dc"],
+          ["#585b70", "#585b70"],
+          ["#1e1e2e", "#1e1e2e"],
+          ["#b4befe", "#b4befe"],
+          ["#11111b", "#11111b"],
+          ["#cdd6f4", "#cdd6f4"]]
 
 groups = [Group("DEV", layout='monadtall'),
           Group("WWW", layout='monadtall'),
@@ -106,8 +111,8 @@ def init_widgets_list():
               widget.Sep(
                        linewidth = 0,
                        padding = 20,
-                       foreground = colors[0],
-                       background = "00000000"
+                       foreground = "#00000000",
+                       background = "#00000000"
                        ),
              widget.TextBox(
                         text = ' ',
@@ -117,7 +122,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[4],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -134,19 +139,19 @@ def init_widgets_list():
                         margin_y = 3,
                         margin_x = 3,
                         borderwidth = 0,
-                        active = colors[2],
-                        inactive = colors[7],
+                        active = colors[8],
+                        inactive = colors[5],
                         rounded = True,
                         highlight_color = colors[1],
                         highlight_method = "block",
-                        this_current_screen_border = colors[6],
+                        this_current_screen_border = colors[1],
                         this_screen_border = colors [4],
                         other_current_screen_border = colors[6],
                         other_screen_border = colors[4],
                         background = "#00000000",
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[4],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -165,7 +170,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[4],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -179,7 +184,7 @@ def init_widgets_list():
               widget.Sep(
                        linewidth = 0,
                        padding = 20,
-                       foreground = colors[0],
+                       foreground = colors[2],
                        background = "00000000"
                        ),
              widget.TextBox(
@@ -190,7 +195,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[2],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -203,13 +208,13 @@ def init_widgets_list():
                        ),
               widget.CurrentLayoutIcon(
                        custom_icon_paths = [os.path.expanduser("~/.config/qtile/icons")],
-                       foreground = colors[2],
+                       foreground = colors[8],
                        background = "#00000000",
                        padding = 0,
                        scale = 0.3,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[2],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -221,12 +226,12 @@ def init_widgets_list():
                         ],
                        ),
               widget.CurrentLayout(
-                       foreground = colors[2],
+                       foreground = colors[8],
                        background = "#00000000",
                        padding = 5,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[2],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -245,7 +250,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[2],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -259,11 +264,11 @@ def init_widgets_list():
               widget.Sep(
                        linewidth = 0,
                        padding = 20,
-                       foreground = colors[0],
+                       foreground = colors[9],
                        background = "00000000"
                        ),
               widget.WindowName(
-                       foreground = colors[2],
+                       foreground = colors[9],
                        background = "#00000000",
                        padding = 0,
                        ),
@@ -298,7 +303,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -312,12 +317,12 @@ def init_widgets_list():
                 widget.Net(
                         interface = "wlp3s0",
                         format = 'Net: {down} ↓↑ {up}',
-                        foreground = colors[1],
+                        foreground = colors[8],
                         background = "#00000000",
                         padding = 5,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -329,14 +334,14 @@ def init_widgets_list():
                         ],
                        ),
               widget.ThermalSensor(
-                       foreground = colors[1],
+                       foreground = colors[8],
                         background = "#00000000",
                        threshold = 90,
                        fmt = 'Temp: {}',
                        padding = 5,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -348,11 +353,11 @@ def init_widgets_list():
                         ],
                        ),
               widget.CPU(
-                       foreground = colors[1],
+                       foreground = colors[8],
                         background = "#00000000",
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -364,14 +369,14 @@ def init_widgets_list():
                         ],
               ),
               widget.Memory(
-                       foreground = colors[1],
+                       foreground = colors[8],
                         background = "#00000000",
                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e htop')},
                        fmt = 'Mem: {}',
                        padding = 5,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -390,7 +395,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[0],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -417,7 +422,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[1],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -433,9 +438,10 @@ def init_widgets_list():
                        font = "Ubuntu Mono",
                        format = '{hour:d}:{min:02d} {percent:2.0%} {char}',
                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + ' -e rog-control-center')},
+                       foreground = colors[8],
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[1],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -449,9 +455,10 @@ def init_widgets_list():
               widget.UPowerWidget(
                         background = "#00000000",
                        font = "Ubuntu Mono",
+                       foreground = colors[8],
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[1],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -470,7 +477,7 @@ def init_widgets_list():
                         fontsize = 14,
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[1],
                             radius=15,
                             filled=True,
                             padding_y=10,
@@ -493,9 +500,10 @@ def init_widgets_list():
                         marign = 10,
                         padding = 20,
                         format = "%A, %B %d - %H:%M ",
+                       foreground = colors[8],
                         decorations = [
                         RectDecoration(
-                            colour="#004040",
+                            colour=colors[3],
                             radius=15,
                             filled=True,
                             padding_y=10,
