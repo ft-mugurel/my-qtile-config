@@ -41,10 +41,13 @@ if [ -e /sys/class/power_supply/BAT0 ]; then
     export IS_LAPTOP=$true
 fi
 
-picom -b &
+
+setxkbmap -option ctrl:swapcaps
+picom --fade-in-step=1 --fade-out-step=1 -b &
 unclutter &
 nm-applet &
 blueman-applet &
+fusuma &
 
 run nm-applet
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1

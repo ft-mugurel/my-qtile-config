@@ -12,17 +12,20 @@ from qtile_extras.widget.decorations import RectDecoration
 
 mod = "mod4"
 
-terminal = "alacritty"
+terminal = "ghostty"
 
 keys = [
         # Launch session
-        Key([mod], "m", lazy.spawn("discord"), lazy.spawn("spotify"), lazy.spawn("obsidian"), lazy.spawn("qutebrowser"), lazy.spawn(terminal), desc="Launch every thing"),
+        Key([mod], "m", lazy.spawn("spotify"), lazy.spawn("obsidian"), lazy.spawn("qutebrowser"), lazy.spawn(terminal), desc="Launch every thing"),
+        Key([mod, "shift"], "m", lazy.spawn("discord"), lazy.spawn("spotify"), lazy.spawn("obsidian"), lazy.spawn("qutebrowser"), lazy.spawn(terminal), desc="Launch every thing"),
         # Qtile controls
         Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
         Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
         Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
         Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
         Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
+        Key([mod, "shift"], "period", lazy.screen.prev_group(skip_empty=True), desc="Move window focus to other window"),
+        Key([mod, "shift"], "comma", lazy.screen.next_group(skip_empty=True), desc="Move window focus to other window"),
         Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
         Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
         Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
@@ -48,9 +51,9 @@ keys = [
         Key([mod], "n", lazy.spawn("obsidian"), desc="Spawn a obsidian"),
         Key([mod], "b", lazy.spawn("qutebrowser"), desc="Spawn a obsidian"),
         # Shell scripts
-        Key([mod], "d", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'"), desc="Spawn a dmenu"),
+        Key([mod], "d", lazy.spawn("dmenu_run -i"), desc="Spawn a dmenu"),
         Key([mod], "a", lazy.spawn("/home/mtu/Tools/dmenu-scripts/dmenu-sessionizer.sh"), desc="Spawn a obsidian"),
-        Key([mod, "shift"], "a", lazy.spawn("alacritty -e /home/mtu/Tools/tmux-sessionizer.sh"), desc="Spawn a obsidian"),
+        Key([mod, "shift"], "a", lazy.spawn("alacritty -e /home/mtu/Tools/dmenu-scripts/tmux-sessionizer.sh"), desc="Spawn a obsidian"),
         Key([mod], "w", lazy.spawn("/home/mtu/Tools/dmenu-scripts/dmenu-pdf.sh"), desc="Spawn a obsidian"),
         Key([mod], "v", lazy.spawn("/home/mtu/Tools/dmenu-scripts/dmenu-video.sh"), desc="Spawn a obsidian"),
         # Keyboard layout
@@ -62,13 +65,19 @@ keys = [
         Key([], "XF86AudioMute", lazy.spawn("amixer sset Master 1+ toggle"), desc="Mute/Unmute Volume"),
         Key([], "XF86KbdBrightnessUp", lazy.spawn("brightnessctl --device='asus::kbd_backlight' s 1+"), desc="Spawn a obsidian"),
         Key([], "XF86KbdBrightnessDown", lazy.spawn("brightnessctl --device='asus::kbd_backlight' s 1-"), desc="Spawn a obsidian"),
-        Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 30+"), desc="Spawn a obsidian"),
-        Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 30-"), desc="Spawn a obsidian"),
+        Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 10+"), desc="Spawn a obsidian"),
+        Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 10-"), desc="Spawn a obsidian"),
         Key([mod, "control"], "s", lazy.spawn("xrandr --output HDMI-1-0 --auto --rotate left --left-of eDP"), desc="Reload the config"),
         # Spotify controls
         Key([mod], "p", lazy.spawn("playerctl -p spotify play-pause"), desc="Play/Pause player"),
         Key([mod], "o", lazy.spawn("playerctl -p spotify next"), desc="Skip to next"),
         Key([mod], "i", lazy.spawn("playerctl -p spotify previous"), desc="Skip to previous"),
+        Key([mod, "shift"], "p", lazy.spawn("playerctl -p chromium play-pause"), desc="Play/Pause player"),
+        Key([mod, "shift"], "o", lazy.spawn("playerctl -p chromium next"), desc="Skip to next"),
+        Key([mod, "shift"], "i", lazy.spawn("playerctl -p chromium previous"), desc="Skip to previous"),
+        Key([mod, "control"], "p", lazy.spawn("playerctl -p firefox play-pause"), desc="Play/Pause player"),
+        Key([mod, "control"], "o", lazy.spawn("playerctl -p firefox next"), desc="Skip to next"),
+        Key([mod, "control"], "i", lazy.spawn("playerctl -p firefox previous"), desc="Skip to previous"),
         # Keybindings list
         Key([mod, "shift"], "t", lazy.spawn("feh -F /home/mtu/Pictures/tmux.png"), desc="Tmux keybindings"),
         ]
@@ -106,8 +115,8 @@ groups = [Group("WWW", layout='monadtall', matches=[Match(wm_class="qutebrowser"
           Group("DEV", layout='monadtall', matches=[Match(wm_class="alacritty")]),
           Group("NOT", layout='monadtall', matches=[Match(wm_class="obsidian")]),
           Group("DOC", layout='monadtall', matches=[Match(wm_class="zathura")]),
-          Group("TIME", layout='monadtall'),
           Group("FILE", layout='monadtall', matches=[Match(wm_class="nemo")]),
+          Group("TIME", layout='monadtall'),
           Group("BOOK", layout='monadtall'),
           Group("MOVI", layout='monadtall', matches=[Match(wm_class="vlc")]),
           Group("DC", layout='monadtall', matches=[Match(wm_class="discord")]),
